@@ -1,0 +1,23 @@
+.wrapper {
+  flex: 1;
+  height: calc(100vh - 260px); // ⬅️ подгони под свой header/padding
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.columnTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.droppableArea {
+  min-height: 720px;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 12px;
+
+}

@@ -1,0 +1,54 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Inter", sans-serif;
+
+  color: #1f1f1f;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Заголовки */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #262962;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Ссылки */
+a {
+  color: #262962;
+  text-decoration: none;
+
+  &:hover {
+    color: #1b1e4b;
+  }
+}
+
+/* Сброс изображений и кнопок */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Для плавного appearance */
+* {
+  box-sizing: border-box;
+}
+
+/* Отключаем transitions во время переключения темы */
