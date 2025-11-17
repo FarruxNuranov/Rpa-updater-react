@@ -27,8 +27,6 @@ const DEPT_COLORS = {
 };
 const ROLE_MAP = { 0: "Administrator", 1: "Updater" };
 
-
-
 const Users = () => {
   const [api, contextHolder] = notification.useNotification();
   const [mockLoading, setMockLoading] = useState(true);
@@ -188,12 +186,14 @@ const Users = () => {
           <Space>
             <Button
               type="default"
+              size="large"
               icon={<CloudDownloadOutlined style={{ fontSize: 16 }} />}
             >
               Export
             </Button>
             <Button
               type="primary"
+              size="large"
               icon={<PlusOutlined />}
               onClick={() => setCreateOpen(true)}
             >
