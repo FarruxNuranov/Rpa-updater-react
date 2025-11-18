@@ -15,9 +15,12 @@ import {
   DeleteOutlined,
   SearchOutlined,
   PlusOutlined,
+  ReloadOutlined,
+  CloudDownloadOutlined,
 } from "@ant-design/icons";
 import { Setting4 } from "iconsax-react";
 import { useThemeMode } from "../../../context/ThemeContext";
+import CreateBrokerModal from "./components/CreateBrokerModal";
 
 const STATUS_COLORS = {
   Active: "green",
@@ -63,6 +66,7 @@ const MOCK_BROKERS = [
 const Brokers = () => {
   const { isDark, token } = useThemeMode();
   const [search, setSearch] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
 
   const dataSource = useMemo(() => {
     if (!search) return MOCK_BROKERS;
@@ -217,10 +221,22 @@ const Brokers = () => {
             <Dropdown
               trigger={["click"]}
               overlay={
-                <Menu>
-                  <Menu.Item key="refresh">Refresh</Menu.Item>
-                  <Menu.Item key="from-qm">From QM</Menu.Item>
-                  <Menu.Item key="manual">Manual</Menu.Item>
+                <Menu
+                  onClick={({ key }) => {
+                    if (key === "manual") {
+                      setCreateOpen(true);
+                    }
+                  }}
+                >
+                  <Menu.Item key="refresh" icon={<ReloadOutlined />}>
+                    Refresh
+                  </Menu.Item>
+                  <Menu.Item key="from-qm" icon={<CloudDownloadOutlined />}>
+                    From QM
+                  </Menu.Item>
+                  <Menu.Item key="manual" icon={<PlusOutlined />}>
+                    Manual
+                  </Menu.Item>
                 </Menu>
               }
             >
@@ -237,6 +253,11 @@ const Brokers = () => {
           dataSource={dataSource}
           rowKey="id"
           pagination={{ pageSize: 10 }}
+        />
+        <CreateBrokerModal
+          open={createOpen}
+          onCancel={() => setCreateOpen(false)}
+          onCreate={() => setCreateOpen(false)}
         />
       </Card>
     </div>
