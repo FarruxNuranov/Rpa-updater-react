@@ -28,7 +28,7 @@ const EmailsLeftPanel = ({
         borderRight: `1px solid ${token.colorBorderSecondary}`,
         display: "flex",
         flexDirection: "column",
-        background: isDark ? "#1f1f23" : "#FFFFFF",
+        background: isDark ? "#16161a" : "#FFFFFF",
       }}
     >
       <div
@@ -71,7 +71,9 @@ const EmailsLeftPanel = ({
           onChange={(e) => onChangeSearch(e.target.value)}
           style={{
             borderRadius: 6,
-            borderColor: "#d9d9d9",
+            borderColor: isDark ? token.colorBorderSecondary : "#d9d9d9",
+            background: isDark ? "#1f1f23" : "#FFFFFF",
+            color: token.colorText,
           }}
         />
       </div>
@@ -102,7 +104,14 @@ const EmailsLeftPanel = ({
                 marginBottom: 4,
               }}
             >
-              <Avatar type="default" style={{ marginRight: 12,backgroundColor: token.colorPrimary, }}>{email.senderName[0]}</Avatar>
+              <Avatar
+                style={{
+                  marginRight: 12,
+                  backgroundColor: token.colorPrimary,
+                }}
+              >
+                {email.senderName[0]}
+              </Avatar>
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
@@ -192,8 +201,23 @@ const EmailsLeftPanel = ({
                 {email.tags?.length ? (
                   <div style={{ marginTop: 6, display: "flex", gap: 6 }}>
                     {email.tags.map((tag, idx) => (
-                      <Tag key={idx} color="#e6f4ff" style={{ margin: 0 }}>
-                        <span style={{ fontSize: 11, color: token.colorText }}>
+                      <Tag
+                        key={idx}
+                        style={{
+                          margin: 0,
+                          borderRadius: 999,
+                          backgroundColor: isDark
+                            ? "rgba(255,255,255,0.06)"
+                            : "#e6f4ff",
+                          border: "none",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 11,
+                            color: token.colorText,
+                          }}
+                        >
                           {tag}
                         </span>
                       </Tag>

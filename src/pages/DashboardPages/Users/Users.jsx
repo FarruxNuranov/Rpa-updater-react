@@ -1,10 +1,20 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Card, Table, Button, Tag, Space, notification, Modal } from "antd";
+import {
+  Card,
+  Table,
+  Button,
+  Tag,
+  Space,
+  notification,
+  Modal,
+  Input,
+} from "antd";
 import {
   CloudDownloadOutlined,
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +26,8 @@ import {
   updateUser,
   deleteUser,
 } from "../../../api/users/usersApi";
+import { useThemeMode } from "../../../context/ThemeContext";
+
 
 const DEPT_COLORS = {
   Dispatcher: "blue",
@@ -29,12 +41,15 @@ const ROLE_MAP = { 0: "Administrator", 1: "Updater" };
 
 const Users = () => {
   const [api, contextHolder] = notification.useNotification();
+  const { isDark, token } = useThemeMode();
   const [mockLoading, setMockLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [search, setSearch] = useState("");
+
   const dispatch = useDispatch();
   const { items, loading, total, paging } = useSelector(
     (s) =>
@@ -68,7 +83,22 @@ const Users = () => {
     setDeleteTarget(record);
     setDeleteOpen(true);
   }, []);
-
+  const onChangeSearch = React.useCallback(
+    (value) => {
+      setSearch(value);
+      dispatch(
+        fetchUsers({
+          skip: 0,
+          take: 10,
+          sortPropName: "createdAt",
+          sortDirection: 2,
+          acceptLanguage: "UZ",
+          search,
+        })
+      );
+    },
+    [dispatch, search]
+  );
   const confirmDelete = React.useCallback(async () => {
     if (!deleteTarget) return;
     try {
@@ -184,6 +214,25 @@ const Users = () => {
         title={<span style={{ fontWeight: 600 }}>Users</span>}
         extra={
           <Space>
+            <Input
+              type="default"
+              size="large"
+              allowClear
+              placeholder="Search"
+              suffix={
+                <SearchOutlined
+                  style={{ color: token.colorTextSecondary, fontSize: 16 }}
+                />
+              }
+              value={search}
+              onChange={(e) => onChangeSearch(e.target.value)}
+              style={{
+                borderRadius: 6,
+                borderColor: isDark ? token.colorBorderSecondary : "#d9d9d9",
+                background: isDark ? "#1f1f23" : "#FFFFFF",
+                color: token.colorText,
+              }}
+            />
             <Button
               type="default"
               size="large"

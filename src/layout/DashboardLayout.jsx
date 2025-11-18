@@ -355,7 +355,7 @@ const DashboardLayout = () => {
               borderRight: `1px solid ${token.colorBorderSecondary}`,
               paddingTop: 64,
               overflowY: "auto",
-              transition: "all 0.3s ease",
+              transition: "all 0.2  s ease",
             }}
           >
             <div

@@ -24,7 +24,7 @@ const EmailsRightPanel = ({ selectedEmail, token, isDark }) => {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        background: isDark ? "#26262C" : "#F5F5F7",
+        background: isDark ? "#1b1b1f" : "#F5F5F7",
       }}
     >
       {!selectedEmail ? (
@@ -75,10 +75,11 @@ const EmailsRightPanel = ({ selectedEmail, token, isDark }) => {
                 </div>
               </div>
             </div>
-<Button
-type="default"
-size="large"
- icon={<Scan color={token.colorPrimary} size={18} type="bold"/> }/>
+            <Button
+              type="default"
+              size="large"
+              icon={<Scan color={token.colorPrimary} size={18} type="bold" />}
+            />
             {/* <button
               type="button"
               style={{
@@ -117,12 +118,12 @@ size="large"
                 alignSelf: "flex-start",
                 maxWidth: 678,
                 width: "100%",
-                background: isDark ? "#1f1f23" : "#FFFFFF",
+                background: isDark ? "#26262C" : "#FFFFFF",
                 borderRadius: 18,
                 padding: 16,
-                boxShadow: "0 1px 3px rgba(15,15,15,0.06)",
+                boxShadow: "0 1px 3px rgba(15,15,15,0.15)",
                 border: isDark
-                  ? "1px solid rgba(255,255,255,0.06)"
+                  ? "1px solid rgba(255,255,255,0.08)"
                   : "1px solid #f0f0f0",
               }}
             >
@@ -242,11 +243,11 @@ size="large"
             >
               <div
                 style={{
-                  background: "#E6F4FF",
+                  background: isDark ? "#1b3b73" : "#E6F4FF",
                   borderRadius: 18,
                   padding: 16,
                   fontSize: 13,
-                  color: token.colorText,
+                  color: isDark ? "#f5f7ff" : token.colorText,
                   lineHeight: 1.6,
                 }}
               >
@@ -288,12 +289,12 @@ size="large"
               style={{
                 alignSelf: "flex-start",
                 maxWidth: 678,
-                background: isDark ? "#1f1f23" : "#FFFFFF",
+                background: isDark ? "#26262C" : "#FFFFFF",
                 borderRadius: 18,
                 padding: 16,
-                boxShadow: "0 1px 3px rgba(15,15,15,0.06)",
+                boxShadow: "0 1px 3px rgba(15,15,15,0.15)",
                 border: isDark
-                  ? "1px solid rgba(255,255,255,0.06)"
+                  ? "1px solid rgba(255,255,255,0.08)"
                   : "1px solid #f0f0f0",
               }}
             >
@@ -336,11 +337,11 @@ size="large"
             >
               <div
                 style={{
-                  background: "#E6F4FF",
+                  background: isDark ? "#1b3b73" : "#E6F4FF",
                   borderRadius: 18,
                   padding: 12,
                   fontSize: 13,
-                  color: token.colorText,
+                  color: isDark ? "#f5f7ff" : token.colorText,
                   lineHeight: 1.6,
                 }}
               >
@@ -386,7 +387,7 @@ size="large"
                   width: 6,
                   height: 6,
                   borderRadius: "50%",
-                  background: "#000",
+                  background: isDark ? "#f5f5f5" : "#000",
                   margin: "0 4px 0 8px",
                 }}
               />
@@ -409,6 +410,8 @@ size="large"
               style={{
                 borderRadius: 12,
                 resize: "none",
+                background: isDark ? "#1f1f23" : "#FFFFFF",
+                color: token.colorText,
               }}
             />
           </div>

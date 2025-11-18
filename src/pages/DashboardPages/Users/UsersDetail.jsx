@@ -13,10 +13,15 @@ import {
   List,
   Space,
   notification,
+  Tabs,
 } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, DeleteOutlined } from "@ant-design/icons";
 import { CATEGORIES } from "../../../config/tickets";
-import { getUserById, updateUser, changeUserPassword } from "../../../api/users/usersApi";
+import {
+  getUserById,
+  updateUser,
+  changeUserPassword,
+} from "../../../api/users/usersApi";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -46,6 +51,27 @@ const MOCK_HISTORY = [
   },
 ];
 
+const MOCK_SESSIONS = [
+  {
+    id: 1,
+    browser: "Google Chrome, 10.1.2",
+    ip: "168.192.1.0.10",
+    time: "Nov 11 2025, 18:16",
+  },
+  {
+    id: 2,
+    browser: "Google Chrome, 10.1.2",
+    ip: "168.192.1.0.10",
+    time: "Nov 11 2025, 18:16",
+  },
+  {
+    id: 3,
+    browser: "Google Chrome, 10.1.2",
+    ip: "168.192.1.0.10",
+    time: "Nov 11 2025, 18:16",
+  },
+];
+
 const ROLES_MAP = { 0: "Administrator", 1: "Updater" };
 
 const UsersDetail = () => {
@@ -57,6 +83,7 @@ const UsersDetail = () => {
   const [saving, setSaving] = useState(false);
   const [pwSaving, setPwSaving] = useState(false);
   const [pwdForm] = Form.useForm();
+  const [sessions, setSessions] = useState(MOCK_SESSIONS);
 
   useEffect(() => {
     let mounted = true;
@@ -87,6 +114,10 @@ const UsersDetail = () => {
       mounted = false;
     };
   }, [id, form, api]);
+
+  const handleRemoveSession = (idToRemove) => {
+    setSessions((prev) => prev.filter((s) => s.id !== idToRemove));
+  };
 
   const initial = useMemo(
     () => ({
@@ -245,28 +276,46 @@ const UsersDetail = () => {
               <Title level={5} style={{ marginTop: 0 }}>
                 Change password
               </Title>
-              <Form layout="vertical" form={pwdForm} onFinish={async (values) => {
-                const { newPassword, confirmPassword } = values || {};
-                if (!newPassword || !confirmPassword) return;
-                if (newPassword !== confirmPassword) {
-                  api.warning({ message: "Passwords do not match", placement: "bottomLeft" });
-                  return;
-                }
-                setPwSaving(true);
-                try {
-                  const res = await changeUserPassword(id, newPassword);
-                  if (res?.status >= 200 && res?.status < 300) {
-                    api.success({ message: "Password changed", placement: "bottomLeft" });
-                    pwdForm.resetFields();
-                  } else {
-                    api.warning({ message: "Unexpected response", description: `Status: ${res?.status ?? "unknown"}`, placement: "bottomLeft" });
+              <Form
+                layout="vertical"
+                form={pwdForm}
+                onFinish={async (values) => {
+                  const { newPassword, confirmPassword } = values || {};
+                  if (!newPassword || !confirmPassword) return;
+                  if (newPassword !== confirmPassword) {
+                    api.warning({
+                      message: "Passwords do not match",
+                      placement: "bottomLeft",
+                    });
+                    return;
                   }
-                } catch (e) {
-                  api.error({ message: "Failed to change password", description: e?.message || "", placement: "bottomLeft" });
-                } finally {
-                  setPwSaving(false);
-                }
-              }}>
+                  setPwSaving(true);
+                  try {
+                    const res = await changeUserPassword(id, newPassword);
+                    if (res?.status >= 200 && res?.status < 300) {
+                      api.success({
+                        message: "Password changed",
+                        placement: "bottomLeft",
+                      });
+                      pwdForm.resetFields();
+                    } else {
+                      api.warning({
+                        message: "Unexpected response",
+                        description: `Status: ${res?.status ?? "unknown"}`,
+                        placement: "bottomLeft",
+                      });
+                    }
+                  } catch (e) {
+                    api.error({
+                      message: "Failed to change password",
+                      description: e?.message || "",
+                      placement: "bottomLeft",
+                    });
+                  } finally {
+                    setPwSaving(false);
+                  }
+                }}
+              >
                 <Form.Item
                   label="New password"
                   name="newPassword"
@@ -287,7 +336,9 @@ const UsersDetail = () => {
                         if (!value || getFieldValue("newPassword") === value) {
                           return Promise.resolve();
                         }
-                        return Promise.reject(new Error("Passwords do not match"));
+                        return Promise.reject(
+                          new Error("Passwords do not match")
+                        );
                       },
                     }),
                   ]}
@@ -298,10 +349,21 @@ const UsersDetail = () => {
                   />
                 </Form.Item>
                 <Space style={{ width: "100%" }} size={12}>
-                  <Button size="large" style={{ flex: 1 }} onClick={() => pwdForm.resetFields()} disabled={pwSaving}>
+                  <Button
+                    size="large"
+                    style={{ flex: 1 }}
+                    onClick={() => pwdForm.resetFields()}
+                    disabled={pwSaving}
+                  >
                     Cancel
                   </Button>
-                  <Button size="large" type="primary" style={{ flex: 1 }} htmlType="submit" loading={pwSaving}>
+                  <Button
+                    size="large"
+                    type="primary"
+                    style={{ flex: 1 }}
+                    htmlType="submit"
+                    loading={pwSaving}
+                  >
                     Change password
                   </Button>
                 </Space>
@@ -318,31 +380,165 @@ const UsersDetail = () => {
               borderRadius: 12,
               boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
             }}
-            headStyle={{ borderBottom: "none" }}
-            title={<span style={{ fontWeight: 600 }}>History</span>}
+            headStyle={{ borderBottom: "none", paddingBottom: 0 }}
           >
-            <List
-              itemLayout="horizontal"
-              dataSource={MOCK_HISTORY}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space size={12}>
-                    <Text type="secondary" style={{ width: 160 }}>
-                      {item.date}
-                    </Text>
-                    <span>
-                      <a
-                        href="#"
-                        onClick={(e) => e.preventDefault()}
-                        style={{ color: "#1677ff" }}
-                      >
-                        Ticket
-                      </a>{" "}
-                      {item.text}
-                    </span>
-                  </Space>
-                </List.Item>
-              )}
+            <Tabs
+              defaultActiveKey="history"
+              items={[
+                {
+                  key: "history",
+                  label: "History",
+                  children: (
+                    <List
+                      itemLayout="horizontal"
+                      dataSource={MOCK_HISTORY}
+                      renderItem={(item) => (
+                        <List.Item style={{ paddingLeft: 0, paddingRight: 0 }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              width: "100%",
+                              alignItems: "flex-start",
+                              gap: 16,
+                            }}
+                          >
+                            <Text
+                              type="secondary"
+                              style={{ width: 170, flexShrink: 0 }}
+                            >
+                              {item.date}
+                            </Text>
+
+                            <div
+                              style={{
+                                position: "relative",
+                                width: 24,
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  bottom: 0,
+                                  left: "50%",
+                                  width: 2,
+                                  transform: "translateX(-50%)",
+                                  backgroundColor: "#E5E5EA",
+                                }}
+                              />
+                              <div
+                                style={{
+                                  position: "relative",
+                                  width: 10,
+                                  height: 10,
+                                  borderRadius: "50%",
+                                  border: "2px solid #1677ff",
+                                  backgroundColor: "#fff",
+                                  marginTop: 4,
+                                  boxSizing: "border-box",
+                                }}
+                              />
+                            </div>
+
+                            <div style={{ flex: 1 }}>
+                              <a
+                                href="#"
+                                onClick={(e) => e.preventDefault()}
+                                style={{ color: "#1677ff" }}
+                              >
+                                Ticket
+                              </a>{" "}
+                              {item.text}
+                            </div>
+                          </div>
+                        </List.Item>
+                      )}
+                    />
+                  ),
+                },
+                {
+                  key: "sessions",
+                  label: "Sessions",
+                  children: (
+                    <List
+                      dataSource={sessions}
+                      renderItem={(session) => (
+                        <List.Item style={{ paddingInline: 0 }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              width: "100%",
+                              padding: "12px 16px",
+                              borderRadius: 12,
+                              
+                              background: "#FFFFFF",
+                            }}
+                          >
+                            <Space size={16}>
+                              <div
+                                style={{
+                                  width: 40,
+                                  height: 40,
+                                  borderRadius: "50%",
+                                  background: "#F5F7FF",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "#1677ff",
+                                  fontSize: 20,
+                                }}
+                              >
+                                <UserOutlined />
+                              </div>
+                              <div>
+                                <div style={{ fontWeight: 500 }}>
+                                  {session.browser}
+                                </div>
+                                <div
+                                  style={{
+                                    marginTop: 2,
+                                    fontSize: 12,
+                                    color: "#8c8c8c",
+                                  }}
+                                >
+                                  {session.ip}
+                                  <span style={{ margin: "0 8px" }}>|</span>
+                                  {session.time}
+                                </div>
+                              </div>
+                            </Space>
+
+                            <Button
+                              type="text"
+                              onClick={() => handleRemoveSession(session.id)}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: 999,
+                                border: "1px solid #ffe1e1",
+                                background: "#fff5f5",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                padding: 0,
+                              }}
+                              icon={
+                                <DeleteOutlined
+                                  style={{ color: "#ff4d4f", fontSize: 16 }}
+                                />
+                              }
+                            />
+                          </div>
+                        </List.Item>
+                      )}
+                    />
+                  ),
+                },
+              ]}
             />
           </Card>
         </Col>

@@ -1,84 +1,44 @@
 import React, { useMemo } from "react";
-import {
-  Modal,
-  Form,
-  Input,
-  Select,
-  Avatar,
-  Space,
-  Typography,
-  Button,
-  Divider,
-  Upload,
-  message,
-} from "antd";
-import {
-  UserOutlined,
-  LoadingOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { Modal, Form, Input, Select, Space, Button } from "antd";
 import { CATEGORIES } from "../../../config/tickets";
-import { uploadFileThunk } from "../../../api/files/filesSlice";
 
 const { Option } = Select;
 
 const ROLES_MAP = { 0: "Administrator", 1: "Updater" };
 const DEPARTMENTS_MAP = CATEGORIES; // numeric -> label
+const STATUS_OPTIONS = ["Active", "Inactive"];
 
 const CreateUserModal = ({ open, onCancel, onSave }) => {
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
 
   const initial = useMemo(
-    () => ({ name: "", email: "", dept: undefined, role: undefined }),
+    () => ({
+      firstName: "",
+      lastName: "",
+      email: "",
+      dept: undefined,
+      role: undefined,
+      status: undefined,
+    }),
     []
   );
 
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      let avatarUrl;
-      if (selectedFile) {
-        try {
-          setIsUploading(true);
-          const uploaded = await dispatch(
-            uploadFileThunk({ file: selectedFile, language: "uz" })
-          ).unwrap();
-          avatarUrl = uploaded?.url;
-        } catch (e) {
-          message.error(e?.message || "Failed to upload image");
-          return;
-        } finally {
-          setIsUploading(false);
-        }
-      }
-      if (onSave) onSave({ ...values, avatarUrl });
+
+      const fullName = `${values.firstName ?? ""} ${
+        values.lastName ?? ""
+      }`.trim();
+
+      if (onSave)
+        onSave({
+          ...values,
+          name: fullName || undefined,
+        });
     } catch {
       // no-op
     }
-  };
-
-  const beforeUpload = (file) => {
-    const isImage = file.type?.startsWith("image/");
-    if (!isImage) {
-      message.error("Only image files are allowed");
-      return Upload.LIST_IGNORE;
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must be smaller than 2MB");
-      return Upload.LIST_IGNORE;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => setPreviewUrl(e.target.result);
-    reader.readAsDataURL(file);
-    setSelectedFile(file);
-    return false;
   };
 
   return (
@@ -108,93 +68,33 @@ const CreateUserModal = ({ open, onCancel, onSave }) => {
         </Space>
       }
     >
-      <Space
-        size={12}
-        align="center"
-        style={{ width: "100%", paddingBottom: "16px" }}
-      >
-        <Upload
-          accept="image/*"
-          showUploadList={false}
-          beforeUpload={beforeUpload}
-        >
-          <div style={{ position: "relative", width: 64, height: 64 }}>
-            <Avatar
-              src={previewUrl}
-              icon={
-                !previewUrl ? <UserOutlined style={{ fontSize: 42 }} /> : null
-              }
-              style={{
-                cursor: "pointer",
-                width: 64,
-                height: 64,
-                backgroundColor: "#E5E7EB",
-                boxShadow: "0 0 0 2px #fff, 0 0 0 6px rgba(255,255,255,0.8)",
-              }}
-            />
-            {!previewUrl && !isUploading && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "50%",
-                  zIndex: 1,
-                  pointerEvents: "none",
-                  color: "#8c8c8c",
-                }}
-              >
-                <UploadOutlined style={{ fontSize: 32 }} />
-              </div>
-            )}
-            {isUploading && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "rgba(255, 255, 255, 0.6)",
-                  borderRadius: "50%",
-                  zIndex: 2,
-                  pointerEvents: "none",
-                }}
-              >
-                <LoadingOutlined style={{ fontSize: 22 }} />
-              </div>
-            )}
-          </div>
-        </Upload>
-        <div>
-          <Typography.Text strong>{form.getFieldValue("name")}</Typography.Text>
-          <br />
-          <Typography.Text type="secondary">
-            {form.getFieldValue("email")}
-          </Typography.Text>
-        </div>
-      </Space>
       <Form
         form={form}
         layout="vertical"
         initialValues={initial}
         preserve={false}
       >
-        <Form.Item
-          size="large"
-          name="name"
-          label="Name"
-          rules={[{ required: true, message: "Required" }]}
-          style={{ marginBottom: 16 }}
-        >
-          <Input
+        {/* First / Last name в одной строке */}
+        <div style={{ display: "flex", gap: 12 }}>
+          <Form.Item
             size="large"
-            style={{ width: "427px" }}
-            placeholder="Full Name"
-          />
-        </Form.Item>
+            name="firstName"
+            label="First name"
+            rules={[{ required: true, message: "Required" }]}
+            style={{ flex: 1, marginBottom: 16 }}
+          >
+            <Input size="large" placeholder="First name" />
+          </Form.Item>
+          <Form.Item
+            size="large"
+            name="lastName"
+            label="Last name"
+            rules={[{ required: true, message: "Required" }]}
+            style={{ flex: 1, marginBottom: 16 }}
+          >
+            <Input size="large" placeholder="Last name" />
+          </Form.Item>
+        </div>
         <Form.Item
           size="large"
           name="email"
@@ -231,6 +131,20 @@ const CreateUserModal = ({ open, onCancel, onSave }) => {
             {Object.entries(ROLES_MAP).map(([value, label]) => (
               <Option key={value} value={Number(value)}>
                 {label}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="status"
+          label="Status"
+          rules={[{ required: true, message: "Required" }]}
+          style={{ marginBottom: 0 }}
+        >
+          <Select size="large" placeholder="Select Status" allowClear>
+            {STATUS_OPTIONS.map((status) => (
+              <Option key={status} value={status}>
+                {status}
               </Option>
             ))}
           </Select>
