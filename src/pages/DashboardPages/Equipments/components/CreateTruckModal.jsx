@@ -1,9 +1,18 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, Select, Radio, Button, Space } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  Radio,
+  Button,
+  Space,
+} from "antd";
 
 const { Option } = Select;
 
-const CreateBrokerModal = ({
+const CreateTruckModal = ({
   open,
   onCancel,
   onCreate,
@@ -33,7 +42,7 @@ const CreateBrokerModal = ({
   return (
     <Modal
       open={open}
-      title={mode === "edit" ? "Edit Broker" : "Create Broker"}
+      title={mode === "edit" ? "Edit Truck" : "Create Truck"}
       onCancel={onCancel}
       width={900}
       footer={
@@ -64,6 +73,7 @@ const CreateBrokerModal = ({
       }
     >
       <Form layout="vertical" form={form} style={{ marginTop: 8 }}>
+        {/* Rows 1-3: 3 columns */}
         <div
           style={{
             display: "grid",
@@ -74,101 +84,67 @@ const CreateBrokerModal = ({
         >
           {/* Row 1 */}
           <Form.Item
-            size="large"
-            label="Contract with"
-            name="contractWith"
+            label="Operated By"
+            name="operatedBy"
             rules={[{ required: true, message: "Required" }]}
           >
             <Select size="large" placeholder="Select Company">
               <Option value="company1">Company 1</Option>
             </Select>
           </Form.Item>
-
           <Form.Item
-            size="large"
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, type: "email", message: "Invalid email" },
-            ]}
-          >
-            <Input size="large" placeholder="example@mail.com" />
-          </Form.Item>
-
-          <Form.Item
-            size="large"
-            label="Customer type"
-            name="customerType"
+            label="Ownership"
+            name="ownership"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Radio.Group style={{ width: "100%" }}>
-              <Space size={24}>
-                <Radio value="broker">Broker</Radio>
-                <Radio value="shipper">Shipper</Radio>
-                <Radio value="carrier">Carrier</Radio>
-              </Space>
-            </Radio.Group>
+            <Select size="large" placeholder="Ownership Type">
+              <Option value="owned">Owned</Option>
+              <Option value="leased">Leased</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Owner"
+            name="owner"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Input size="large" placeholder="Owner Name" />
           </Form.Item>
 
           {/* Row 2 */}
           <Form.Item
-            size="large"
-            label="Name"
-            name="name"
+            label="Unit #"
+            name="unit"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="Company name" />
+            <Input size="large" placeholder="Unit #" />
           </Form.Item>
-
           <Form.Item
-            size="large"
-            label="MC number"
-            name="mcNumber"
+            label="VIN"
+            name="vin"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="MC number" />
+            <Input size="large" placeholder="VIN #" />
           </Form.Item>
-
-          <Form.Item size="large" label="Ref number" name="refNumber">
-            <Input size="large" placeholder="Ref number" />
+          <Form.Item
+            label="In Service Date"
+            name="inServiceDate"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <DatePicker
+              size="large"
+              style={{ width: "100%" }}
+              format="DD/MM/YYYY"
+            />
           </Form.Item>
 
           {/* Row 3 */}
           <Form.Item
-            label="Address"
-            name="address1"
+            label="Licence Plate #"
+            name="licensePlate"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="Address line" />
+            <Input size="large" placeholder="Licence Plate #" />
           </Form.Item>
-
-          <Form.Item label="Address" name="address2">
-            <Input size="large" placeholder="Address 2" />
-          </Form.Item>
-
-          <Form.Item
-            label="Country"
-            name="country"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Radio.Group style={{ width: "100%" }}>
-              <Space size={24}>
-                <Radio value="usa">USA</Radio>
-                <Radio value="canada">Canada</Radio>
-                <Radio value="mexico">Mexico</Radio>
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-
-          {/* Row 4 */}
-          <Form.Item
-            label="City"
-            name="city"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Input size="large" placeholder="City" />
-          </Form.Item>
-
           <Form.Item
             label="State"
             name="state"
@@ -178,13 +154,69 @@ const CreateBrokerModal = ({
               <Option value="CA">CA</Option>
             </Select>
           </Form.Item>
-
           <Form.Item
-            label="ZIP"
-            name="zip"
+            label="Country"
+            name="country"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="ZIP Code" />
+            <Radio.Group>
+              <Radio value="usa">USA</Radio>
+              <Radio value="canada">Canada</Radio>
+              <Radio value="mexico">Mexico</Radio>
+            </Radio.Group>
+          </Form.Item>
+        </div>
+
+        {/* Row 4 - Make / Year (2 columns) */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            columnGap: 16,
+          }}
+        >
+          <Form.Item
+            label="Make"
+            name="make"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Select size="large" placeholder="Select Make">
+              <Option value="freightliner">Freightliner</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Year"
+            name="year"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Input size="large" placeholder="YYYY" />
+          </Form.Item>
+        </div>
+
+        {/* Row 5 - Fuel Type / Weight (2 columns) */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            columnGap: 16,
+          }}
+        >
+          <Form.Item
+            label="Fuel Type"
+            name="fuelType"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Select size="large" placeholder="Select Fuel Type">
+              <Option value="diesel">Diesel</Option>
+              <Option value="gas">Gasoline</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Weight"
+            name="weight"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Input size="large" placeholder="0 lbs" />
           </Form.Item>
         </div>
       </Form>
@@ -192,4 +224,4 @@ const CreateBrokerModal = ({
   );
 };
 
-export default CreateBrokerModal;
+export default CreateTruckModal;

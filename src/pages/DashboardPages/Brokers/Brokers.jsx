@@ -67,6 +67,8 @@ const Brokers = () => {
   const { isDark, token } = useThemeMode();
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedBroker, setSelectedBroker] = useState(null);
 
   const dataSource = useMemo(() => {
     if (!search) return MOCK_BROKERS;
@@ -156,10 +158,16 @@ const Brokers = () => {
       ),
       key: "column-settings",
       align: "center",
-      width: 80,
-      render: () => (
+      render: (record) => (
         <Space size={12}>
-          <Button type="text" icon={<EditOutlined />} />
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setSelectedBroker(record);
+              setEditOpen(true);
+            }}
+          />
           <Button type="text" danger icon={<DeleteOutlined />} />
         </Space>
       ),
@@ -243,6 +251,27 @@ const Brokers = () => {
           open={createOpen}
           onCancel={() => setCreateOpen(false)}
           onCreate={() => setCreateOpen(false)}
+        />
+        <CreateBrokerModal
+          open={editOpen}
+          mode="edit"
+          initialValues={
+            selectedBroker
+              ? {
+                  name: selectedBroker.name,
+                  email: selectedBroker.email,
+                  address1: selectedBroker.address,
+                }
+              : undefined
+          }
+          onCancel={() => {
+            setEditOpen(false);
+            setSelectedBroker(null);
+          }}
+          onCreate={() => {
+            setEditOpen(false);
+            setSelectedBroker(null);
+          }}
         />
       </Card>
     </div>

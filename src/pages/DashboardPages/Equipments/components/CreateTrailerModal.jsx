@@ -6,15 +6,13 @@ import {
   Select,
   DatePicker,
   Radio,
-  Upload,
   Button,
   Space,
 } from "antd";
-import { InboxOutlined, SearchOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
-const CreateDriverModal = ({
+const CreateTrailerModal = ({
   open,
   onCancel,
   onCreate,
@@ -27,8 +25,8 @@ const CreateDriverModal = ({
     try {
       const values = await form.validateFields();
       if (onCreate) onCreate(values);
-    } catch (error) {
-      console.error("Validation failed:", error);
+    } catch {
+      // validation errors
     }
   };
 
@@ -44,20 +42,11 @@ const CreateDriverModal = ({
   return (
     <Modal
       open={open}
-      title={
-        <span style={{ fontWeight: 600 }}>
-          {mode === "edit" ? "Edit Driver" : "Create Driver"}
-        </span>
-      }
+      title={mode === "edit" ? "Edit Trailer" : "Create Trailer"}
       onCancel={onCancel}
       width={900}
       centered
-      bodyStyle={{
-        paddingTop: 12,
-        paddingBottom: 16,
-        maxHeight: 620,
-        overflowY: "auto",
-      }}
+      bodyStyle={{ paddingTop: 12, paddingBottom: 16 }}
       footer={
         <Space
           style={{
@@ -86,17 +75,19 @@ const CreateDriverModal = ({
       }
     >
       <Form layout="vertical" form={form} style={{ marginTop: 4 }}>
-        {/* Row 1 & 2: 3 columns */}
+        {/* Rows 1-2: 3 columns */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr",
             columnGap: 16,
+            rowGap: 6,
           }}
         >
+          {/* Row 1 */}
           <Form.Item
-            label="Hired To"
-            name="hiredTo"
+            label="Operated By"
+            name="operatedBy"
             rules={[{ required: true, message: "Required" }]}
           >
             <Select size="large" placeholder="Select Company">
@@ -104,44 +95,41 @@ const CreateDriverModal = ({
             </Select>
           </Form.Item>
           <Form.Item
-            label="Hired Date"
-            name="hiredDate"
+            label="Ownership"
+            name="ownership"
             rules={[{ required: true, message: "Required" }]}
           >
-            <DatePicker
-              size="large"
-              style={{ width: "100%" }}
-              format="DD/MM/YYYY"
-            />
-          </Form.Item>
-          <Form.Item
-            label="Driver type"
-            name="driverType"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Select size="large" placeholder="Select Type">
-              <Option value="companyDriver">Company Driver</Option>
-              <Option value="ownerOperator">Owner Operator</Option>
+            <Select size="large" placeholder="Ownership Type">
+              <Option value="owned">Owned</Option>
+              <Option value="leased">Leased</Option>
             </Select>
           </Form.Item>
+          <Form.Item
+            label="Owner"
+            name="owner"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Input size="large" placeholder="Owner Name" />
+          </Form.Item>
 
+          {/* Row 2 */}
           <Form.Item
-            label="First Name"
-            name="firstName"
+            label="Unit #"
+            name="unit"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="First Name" />
+            <Input size="large" placeholder="Unit #" />
           </Form.Item>
           <Form.Item
-            label="Last Name"
-            name="lastName"
+            label="VIN"
+            name="vin"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="Last Name" />
+            <Input size="large" placeholder="VIN #" />
           </Form.Item>
           <Form.Item
-            label="Birth Date"
-            name="birthDate"
+            label="In Service Date"
+            name="inServiceDate"
             rules={[{ required: true, message: "Required" }]}
           >
             <DatePicker
@@ -152,7 +140,7 @@ const CreateDriverModal = ({
           </Form.Item>
         </div>
 
-        {/* Row 3: Email & Phone (2 columns) */}
+        {/* Row 3 - Make / Year (2 columns) */}
         <div
           style={{
             display: "grid",
@@ -161,98 +149,78 @@ const CreateDriverModal = ({
           }}
         >
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, type: "email", message: "Invalid email" },
-            ]}
-          >
-            <Input size="large" placeholder="example@mail.com" />
-          </Form.Item>
-          <Form.Item
-            label="Phone"
-            name="phone"
+            label="Make"
+            name="make"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="Phone number" />
+            <Select size="large" placeholder="Select Make">
+              <Option value="vanguard">Vanguard</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Year"
+            name="year"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Input size="large" placeholder="YYYY" />
           </Form.Item>
         </div>
 
-        {/* Row 4 & 5: Address / Country / City / State / ZIP */}
+        {/* Row 4 - Licence Plate / Trailer Type (2 columns) */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            columnGap: 16,
+          }}
+        >
+          <Form.Item
+            label="Licence Plate #"
+            name="licensePlate"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Input size="large" placeholder="Licence Plate #" />
+          </Form.Item>
+          <Form.Item
+            label="Trailer Type"
+            name="trailerType"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Select size="large" placeholder="Select Trailer Type">
+              <Option value="van">Van</Option>
+              <Option value="reefer">Reefer</Option>
+            </Select>
+          </Form.Item>
+        </div>
+
+        {/* Row 5 - Length / Height / Number of Axles (3 columns) */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr",
             columnGap: 16,
-            rowGap: 8,
           }}
         >
           <Form.Item
-            label="Address"
-            name="address1"
+            label="Length"
+            name="length"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Input size="large" placeholder="Address line" />
-          </Form.Item>
-          <Form.Item label="Address" name="address2">
-            <Input size="large" placeholder="Address 2" />
+            <Input size="large" placeholder="0 ft" />
           </Form.Item>
           <Form.Item
-            label="Country"
-            name="country"
+            label="Height"
+            name="height"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Radio.Group>
-              <Radio value="usa">USA</Radio>
-              <Radio value="canada">Canada</Radio>
-              <Radio value="mexico">Mexico</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          <Form.Item
-            label="City"
-            name="city"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Input
-              size="large"
-              placeholder="City"
-              suffix={<SearchOutlined style={{ color: "#bfbfbf" }} />}
-            />
+            <Input size="large" placeholder="0 ft" />
           </Form.Item>
           <Form.Item
-            label="State"
-            name="state"
+            label="Number of Axles"
+            name="numberOfAxles"
             rules={[{ required: true, message: "Required" }]}
           >
-            <Select size="large" placeholder="Select State">
-              <Option value="CA">CA</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="ZIP"
-            name="zip"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Input size="large" placeholder="ZIP Code" />
-          </Form.Item>
-        </div>
-
-        {/* Upload Driver's License */}
-        <div style={{ gridColumn: "1 / -1" }}>
-          <div style={{ marginBottom: 8 }}>
-            Upload Driver's License (optional)
-          </div>
-          <Form.Item name="license" style={{ marginBottom: 0 }}>
-            <Upload.Dragger multiple={false} accept="image/*,.pdf">
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined style={{ fontSize: 32 }} />
-              </p>
-              <p className="ant-upload-text">
-                Click or drag file to this area to upload
-              </p>
-              <p className="ant-upload-hint">Supported formats: Images, PDF</p>
-            </Upload.Dragger>
+            <Input size="large" placeholder="0" />
           </Form.Item>
         </div>
       </Form>
@@ -260,4 +228,4 @@ const CreateDriverModal = ({
   );
 };
 
-export default CreateDriverModal;
+export default CreateTrailerModal;
