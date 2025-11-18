@@ -14,7 +14,6 @@ const PaperworkDetail = ({ open, onClose, load }) => {
       onCancel={onClose}
       footer={null}
       width={1260}
-  
       centered
       closable={false}
       styles={{
@@ -72,14 +71,13 @@ const PaperworkDetail = ({ open, onClose, load }) => {
       <div
         style={{
           display: "flex",
-    
         }}
       >
         {/* LEFT SIDE */}
         <div
           style={{
             flex: "0 0 760px",
-        
+
             borderRight: `1px solid ${token.colorBorderSecondary}`,
             boxSizing: "border-box",
           }}
@@ -163,8 +161,6 @@ const PaperworkDetail = ({ open, onClose, load }) => {
         <div
           style={{
             flex: "1 1 500px",
-          
-            
           }}
         >
           <PaperworkRightPanel />

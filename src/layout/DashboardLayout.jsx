@@ -31,6 +31,8 @@ import {
   TeamOutlined,
   SettingOutlined,
   MessageOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,6 +53,7 @@ const DashboardLayout = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { data: profile } = useSelector((s) => s.profile);
   const [ticketModalId, setTicketModalId] = useState(null);
+  const [isSiderCollapsed, setIsSiderCollapsed] = useState(false);
 
   useEffect(() => {
     if (!profile) {
@@ -62,7 +65,7 @@ const DashboardLayout = () => {
   const menuItems = [
     {
       type: "group",
-      label: "Main",
+      label: isSiderCollapsed ? null : "Main",
       children: [
         {
           key: "/dashboard",
@@ -92,7 +95,7 @@ const DashboardLayout = () => {
     },
     {
       type: "group",
-      label: "Account Resources",
+      label: isSiderCollapsed ? null : "Account Resources",
       children: [
         {
           key: "/dashboard/users",
@@ -339,6 +342,9 @@ const DashboardLayout = () => {
         <Layout>
           <Sider
             width={208}
+            collapsedWidth={72}
+            collapsed={isSiderCollapsed}
+            trigger={null}
             theme={isDark ? "dark" : "light"}
             style={{
               position: "fixed",
@@ -349,6 +355,7 @@ const DashboardLayout = () => {
               borderRight: `1px solid ${token.colorBorderSecondary}`,
               paddingTop: 64,
               overflowY: "auto",
+              transition: "all 0.3s ease",
             }}
           >
             <div
@@ -385,13 +392,44 @@ const DashboardLayout = () => {
             </div>
           </Sider>
 
+          {/* Кнопка сворачивания сайдбара */}
+          <Button
+            type="button"
+            onClick={() => setIsSiderCollapsed((prev) => !prev)}
+            style={{
+              position: "fixed",
+              top: 110,
+              left: isSiderCollapsed ? 72 : 208,
+              transform: "translateX(-50%)",
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              border: `1px solid ${token.colorBorderSecondary}`,
+              background: isDark ? "#26262C" : "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 12px rgba(15, 15, 15, 0.16)",
+              cursor: "pointer",
+              zIndex: 110,
+              padding: 0,
+            }}
+          >
+            {isSiderCollapsed ? (
+              <RightOutlined style={{ fontSize: 14, color: token.colorText }} />
+            ) : (
+              <LeftOutlined style={{ fontSize: 14, color: token.colorText }} />
+            )}
+          </Button>
+
           <Content
             style={{
-              marginLeft: 208,
+              marginLeft: isSiderCollapsed ? 72 : 208,
               marginTop: 63,
               height: "calc(100vh - 64px)",
               overflowY: "auto",
               background: isDark ? "#2F2F37" : "#FAFAFA",
+              transition: "margin-left 0.2s ease",
             }}
           >
             <Outlet />
