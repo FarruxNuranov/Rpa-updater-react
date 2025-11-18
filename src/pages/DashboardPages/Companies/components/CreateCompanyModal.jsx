@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Form, Input, Select, Space, Button, Radio, Upload } from "antd";
 import { SearchOutlined, InboxOutlined } from "@ant-design/icons";
 import { useThemeMode } from "../../../../context/ThemeContext";
 
 const { Option } = Select;
 
-const CreateCompanyModal = ({ open, onCancel, onCreate }) => {
+const CreateCompanyModal = ({
+  open,
+  onCancel,
+  onCreate,
+  mode = "create",
+  initialValues,
+}) => {
   const [form] = Form.useForm();
   const { token } = useThemeMode();
 
@@ -21,10 +27,23 @@ const CreateCompanyModal = ({ open, onCancel, onCreate }) => {
     }
   };
 
+  useEffect(() => {
+    if (!open) return;
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    } else if (mode === "create") {
+      form.resetFields();
+    }
+  }, [open, initialValues, mode, form]);
+
   return (
     <Modal
       open={open}
-      title={<span style={{ fontWeight: 600 }}>Create Company</span>}
+      title={
+        <span style={{ fontWeight: 600 }}>
+          {mode === "edit" ? "Edit Company" : "Create Company"}
+        </span>
+      }
       onCancel={onCancel}
       width={960}
       centered
@@ -56,12 +75,17 @@ const CreateCompanyModal = ({ open, onCancel, onCreate }) => {
             style={{ flex: 1, maxWidth: 120 }}
             onClick={handleCreate}
           >
-            Create
+            {mode === "edit" ? "Save" : "Create"}
           </Button>
         </Space>
       }
     >
-      <Form layout="vertical" form={form} style={{ marginTop: 4 }}>
+      <Form
+        layout="vertical"
+        form={form}
+        style={{ marginTop: 4 }}
+        requiredMark={false}
+      >
         {/* Row 1: DOT, MC */}
         <div
           style={{
@@ -131,7 +155,11 @@ const CreateCompanyModal = ({ open, onCancel, onCreate }) => {
             <Input size="large" placeholder="Address 2" />
           </Form.Item>
           <Form.Item
-            label="Country"
+            label={
+              <span>
+                Country <span style={{ color: "#ff4d4f" }}>*</span>
+              </span>
+            }
             name="country"
             rules={[{ required: true, message: "Required" }]}
           >

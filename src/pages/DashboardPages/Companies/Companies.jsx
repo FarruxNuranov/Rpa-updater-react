@@ -42,6 +42,8 @@ const MOCK_COMPANIES = [
 const Companies = () => {
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editCompany, setEditCompany] = useState(null);
   const { token, isDark } = useThemeMode();
 
   const filteredCompanies = useMemo(() => {
@@ -171,6 +173,10 @@ const Companies = () => {
                     size="large"
                     icon={<EditOutlined />}
                     style={{ padding: 0, color: token.colorText }}
+                    onClick={() => {
+                      setEditCompany(company);
+                      setEditOpen(true);
+                    }}
                   />
                   <Button
                     type="text"
@@ -269,6 +275,27 @@ const Companies = () => {
       <CreateCompanyModal
         open={createOpen}
         onCancel={() => setCreateOpen(false)}
+      />
+      <CreateCompanyModal
+        open={editOpen}
+        mode="edit"
+        initialValues={
+          editCompany
+            ? {
+                dot: editCompany.dot,
+                mc: editCompany.mc,
+                name: editCompany.name,
+                address1: editCompany.address,
+                email: editCompany.email,
+                phone: editCompany.phone,
+                timezone: editCompany.timezone,
+              }
+            : undefined
+        }
+        onCancel={() => {
+          setEditOpen(false);
+          setEditCompany(null);
+        }}
       />
     </div>
   );
