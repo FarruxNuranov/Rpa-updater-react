@@ -25,13 +25,13 @@ const CreateBrokerModal = ({ open, onCancel, onCreate }) => {
         <Space style={{ width: "100%", gap: 8 , display: "flex",
             justifyContent: "flex-end",
           }}>
-          <Button style={{ flex: 1 }} size="large" onClick={onCancel}>
+          <Button style={{ flex: 1, width: "100px" }} size="large" onClick={onCancel}>
             Cancel
           </Button>
           <Button
             type="primary"
             size="large"
-            style={{ flex: 1 }}
+            style={{ flex: 1, width: "100px" }}
             onClick={handleOk}
           >
             Create

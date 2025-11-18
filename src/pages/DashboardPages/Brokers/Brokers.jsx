@@ -98,24 +98,9 @@ const Brokers = () => {
         key: "email",
       },
       {
-        title: "Phone",
-        dataIndex: "phone",
-        key: "phone",
-      },
-      {
-        title: "Hired Company",
-        dataIndex: "hiredCompany",
-        key: "hiredCompany",
-        render: (_, record) => (
-          <div>
-            <div>{record.hiredCompany}</div>
-            {record.hiredDate && (
-              <div style={{ fontSize: 12, color: "#8c8c8c" }}>
-                {record.hiredDate}
-              </div>
-            )}
-          </div>
-        ),
+        title: "Address",
+        dataIndex: "address",
+        key: "address",
       },
       {
         title: "Status",
